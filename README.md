@@ -25,7 +25,7 @@ rosrun position_control position_controller
 ````
 
 # Assignment 3
-<img src=docs/img/Assignment_3.png />
+<img src=docs/img/Assignment_3.png width="200" />
 
 # Assignment 4
 <img src=docs/img/Assignment_4.png />
