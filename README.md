@@ -25,6 +25,7 @@ rosrun position_control position_controller
 ````
 
 # Assignment 3
-![image text](docs/img/Assignment 3.png "Assignment 3")
+<img src=docs/img/Assignment_3.png />
+
 # Assignment 4
-![image text](docs/img/Assignment 4.png "Assignment 4")
+<img src=docs/img/Assignment_4.png />
