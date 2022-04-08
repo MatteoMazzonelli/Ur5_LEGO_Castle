@@ -38,6 +38,6 @@ one of its lateral sides or on its top. Each object has to be stored in the posi
 <img src=docs/img/Assignment_3.png width="500" />
 
 # Assignment 4
-The objects on the initial stand are those needed to create a composite object with a known design (e.g., a castle). The objects are positioned randomly on the stand. An object could be lying on one of its lateral sides or on its top. The manipulator has to pick them up in sequence and create the desired composite object on the final stand.
+The objects on the initial stand are those needed to create a composite object with a known design (e.g. a castle). The objects are positioned randomly on the stand. An object could be lying on one of its lateral sides or on its top. The manipulator has to pick them up in sequence and create the desired composite object on the final stand.
 
 <img src=docs/img/Assignment_4.png width="500" />
