@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+
+  <node name="rotation" pkg="rotation-ctrl" type="rotation_ctrl.py" respawn="true"
+        output="screen" />
+
+
+</launch>
