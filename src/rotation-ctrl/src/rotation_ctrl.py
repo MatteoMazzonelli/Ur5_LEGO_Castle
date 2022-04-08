@@ -38,20 +38,16 @@ contour_list = []#list of contours
 points_yolo = [] #list of coordinates of blocks detected by yolo
 cord_x_yolo = [] #list of cord x given by yolo
 cord_y_yolo = [] #list of cord y given by yolo
-names = []#list of yolo detected type of blocks
-sorted_rect_list = [] 
 
-xyz = []
+
+xyz = [] #list of pcl
 
 KINECT_H = 1.02 #kinect z coordinate
 
 #kinect image dimesions
-P_LIMIT = 760
-HEIGHT = P_LIMIT 
-WIDTH = 1024
-
-X_LIMIT_MAX = 690
-X_LIMIT_MIN = 370
+P_LIMIT = 760 #pixel limit 
+HEIGHT = P_LIMIT #image H
+WIDTH = 1024 #image W
 
 W_H_MIN_PIXEL = 15#min dimesion of bbox
 
@@ -110,6 +106,8 @@ def isInside(p,rect):
         return True
     return False
 
+
+#Distance of two points
 def distance(p1,p2):
     x1 = p1[0]
     x2 = p2[0]
@@ -140,6 +138,7 @@ def rect_control():
         contour_list.pop(i)
 
 #----------------------------------------------------------------------------------------------------
+
 #Detects circles in img_angles.jpg. We use them for orientation control
 def detect_circles():
     global circles_centers,image_angles
@@ -151,17 +150,17 @@ def detect_circles():
     #img = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
     lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
 
-    #-----Splitting the LAB image to different channels-------------------------
+    #Splitting the LAB image to different channels
     l, a, b = cv2.split(lab)
     
-    #-----Applying CLAHE to L-channel-------------------------------------------
+    #Applying CLAHE to L-channel
     clahe = cv2.createCLAHE(clipLimit=8.0, tileGridSize=(1000,1000))
     cl = clahe.apply(l)
 
-    #-----Merge the CLAHE enhanced L-channel with the a and b channel-----------
+    #Merge the CLAHE enhanced L-channel with the a and b channel
     limg = cv2.merge((cl,a,b))
 
-    #-----Converting image from LAB Color model to RGB model--------------------
+    #Converting image from LAB Color model to RGB model
     final = cv2.cvtColor(limg, cv2.COLOR_LAB2BGR)
 
     gray =  cv2.cvtColor(final, cv2.COLOR_BGR2GRAY)
@@ -211,7 +210,7 @@ def has_circle_inside(rect):
                 
         
 
-
+#return lowest (so the highest z block coordinate) pcl z value inside a given bbox
 def ctrl_highest_px(rect):
     global xyz, rect_list,rect_box_list
     index = rect_list.index(rect)
@@ -347,7 +346,7 @@ def sortData():
             l1_list.append(distance(p1,p2))
             l2_list.append(distance(p2,p3))
 
-
+#Publish all data
 def publishData():
     global cord_y_cv,cord_x_cv,cord_z_cv,orientation,l1_list,l2_list,sorted_angles
 
@@ -394,23 +393,22 @@ def publishData():
     pub_l1.publish(data_l1)
     pub_l2.publish(data_l2)
 
-            
+#get cord_x from yolo
 def getX(data):
     global cord_x_yolo
     cord_x_yolo = data.data
-    
+
+#get cord_y from yolo
 def getY(data):
     global cord_y_yolo
     cord_y_yolo = data.data
 
+#get pcl from yolo
 def getP(data):
     global point_cloud
     point_cloud = data
 
-def getN(data):
-    global names
-    names = data.data
-
+#get image from the second kinect, the ortogonal one
 def getImageAngles(data):
     global image_angles
     try:
@@ -428,7 +426,6 @@ if __name__ == '__main__':
 
     subX = rospy.Subscriber("cord_x", Float64MultiArray, getX)
     subY = rospy.Subscriber("cord_y", Float64MultiArray, getY)
-    subN = rospy.Subscriber("name", Int64MultiArray, getN)
     subImageAngles = rospy.Subscriber("/camera/color/image_raw_2", Image, getImageAngles)
     subP = rospy.Subscriber("/camera/depth/points_2", PointCloud2, getP)
 
@@ -436,7 +433,6 @@ if __name__ == '__main__':
     subY.callback
     subP.callback
     subImageAngles.callback
-    subN.callback
     
 
     sleep(2)

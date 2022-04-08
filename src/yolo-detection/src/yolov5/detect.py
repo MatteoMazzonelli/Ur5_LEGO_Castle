@@ -77,7 +77,7 @@ def letterbox(img, new_shape=(640, 640), color=(114, 114, 114), auto=True, scale
     return img, ratio, (dw, dh)
 
 
-
+#yolo detect function
 def detect():
     
     #source, weights, save_txt, imgsz = opt.source, opt.weights, opt.save_txt, opt.img_size
@@ -103,15 +103,13 @@ def detect():
         modelc.load_state_dict(torch.load(
             'weights/resnet101.pt', map_location=device)['model']).to(device).eval()
 
-    # Set Dataloader
-    #dataset = LoadImages(source, img_size=imgsz, stride=stride)
     im0s = image
     img = letterbox(im0s, imgsz, stride)[0]
     # Convert
     img = img[:, :, ::-1].transpose(2, 0, 1)  # BGR to RGB, to 3x416x416
     img = np.ascontiguousarray(img)
 
-    # Get names and colors
+    # Get names 
     names = model.module.names if hasattr(model, 'module') else model.names
 
     # Run inference
@@ -168,11 +166,11 @@ def detect():
                     y = ((line[2]*HEIGHT)+small_add) if (names[int(cls)] == "X1-Y2-Z1" or names[int(cls)] == "X1-Y4-Z1") else ((line[2]*HEIGHT) + big_add) 
                     
                     if(y>P_LIMIT):
-                        # print(names[int(cls)])
                         with open(txt_path + '.txt', 'a') as f:
                             f.write('%s %f %f' %
                                     (names[int(cls)], x, y) + '\n')
 
+#get image from the frontal kinect and check the histogram for detecting scene changes
 def getImageYolo(data):
     global scene_ctrl,image,image_old
     histogram0 = []
@@ -247,6 +245,7 @@ if __name__ == '__main__':
     
     rospy.init_node('pos_manager', anonymous=True)
     rate = rospy.Rate(100)
+    
     subImageYolo = rospy.Subscriber("/camera/color/image_raw", Image, getImageYolo)
     subImageYolo.callback
     sleep(5)
@@ -258,13 +257,13 @@ if __name__ == '__main__':
         detect()
         print("YOLO HAS STARTED")
         n_detect = 1
+        #launch detect function if the scene has changed
         while True:
             while n_detect>0:
                 detect()
                 n_detect -= 1
                 
             if(scene_ctrl>HIST_CONF):
-                #print("\nDetection start")
                 n_detect = 1
                 scene_ctrl = 0
             

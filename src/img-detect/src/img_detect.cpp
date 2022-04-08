@@ -112,12 +112,6 @@ int leggiPosizioni(cv::Mat pt)
     type.data.clear();
     while (input_file >> nome >> x >> y)
     {
-        // if (count == 0){
-        //     cord_x.data.clear();
-        //     cord_y.data.clear();
-        //     type.data.clear();
-        //     count = 1;
-        // }
         Vector3f src_point(x, y, 1);
         Vector2f dst_point = getDstPoint(pt, src_point);
 
@@ -130,40 +124,20 @@ int leggiPosizioni(cv::Mat pt)
     return 0;
 }
 
-// void imageCallback(const sensor_msgs::ImageConstPtr &msg)
-// {
-//     try
-//     {
-
-//         //save into img.jpg the msg published by the kinect camera
-//         cv::imwrite("img_angles.jpg", cv_bridge::toCvShare(msg, "bgr8")->image);
-//     }
-//     catch (cv_bridge::Exception &e)
-//     {
-//         ROS_ERROR("Could not convert from '%s' to 'bgr8'.", msg->encoding.c_str());
-//     }
-// }
-
 int main(int argc, char **argv)
 {
 
     //values for PrespectiveMatrix
-    
     cv::Point2f ad(0, -0.5);
     cv::Point2f bd(0, 0.5);
     cv::Point2f cd(0.5, -0.5);
     cv::Point2f dd(0.5, 0.5);
+
     cv::Point2f as(465, 792);
     cv::Point2f bs(1577, 792);
     cv::Point2f cs(250, 1082);
     cv::Point2f ds(1789, 1082);
-
-    // cv::Point2f as(365, 443);
-    // cv::Point2f bs(1676, 443);
-    // cv::Point2f cs(169, 931);
-    // cv::Point2f ds(1869, 931);
     
-
     cv::Point2f dst_points[4] = {ad, bd, cd, dd};
     cv::Point2f src_points[4] = {as, bs, cs, ds};
     cv::Mat pt = getPerspectiveTransform(src_points, dst_points);
@@ -183,7 +157,6 @@ int main(int argc, char **argv)
 
         if (leggiPosizioni(pt) == 0)
         {
-            //std::cout << "OK" << std::endl;
             chatter_pub_x.publish(cord_x);
             chatter_pub_y.publish(cord_y);
             chatter_pub_type.publish(type);
